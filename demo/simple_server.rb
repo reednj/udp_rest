@@ -8,8 +8,6 @@ port = 7890
 puts "listening on 0.0.0.0:#{port}..."
 
 UHTTPServer.new(:port => port) do |s|
-	puts s.port
-	
 	s.get '/hello' do
 		'hello'
 	end

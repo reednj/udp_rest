@@ -57,6 +57,10 @@ class UHTTPServer
 		end
 	end
 
+	def udp_server
+		@udp
+	end
+
 	def post(path, &block)
 		add_route('POST', path, &block)
 	end
@@ -178,9 +182,9 @@ class UDPServer
 	end
 
 	def listen(port, options = {})
-		port = port.to_i
-		host = options[:host] || '0.0.0.0'
-		self.socket.bind(host, port)
+		@port = port.to_i
+		@host = options[:host] || '0.0.0.0'
+		self.socket.bind(@host, @port)
 
 		loop do
 			response = self.receive()
@@ -195,6 +199,14 @@ class UDPServer
 
 	def send(text, host, port)
 		self.socket.send(text, 0, host, port)
+	end
+
+	def host
+		@host
+	end
+
+	def port
+		@port
 	end
 
 end
