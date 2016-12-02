@@ -17,7 +17,7 @@ class UDPRestClient
 		self.timeout = 5.0
 	end
 
-	def request(text)
+	def send_text(text)
 		thread = WorkerThread.new.start :timeout => self.timeout do
 			self.socket.send(text, 0, self.host, self.port)
 			response_data = self.socket.recvfrom(@max_packet_size)
@@ -33,8 +33,12 @@ class UDPRestClient
 	def self.uhttp(req_method, url)
 		uri = URI(url)
 		client = UDPRestClient.new(uri.host, uri.port || 80)
-		text = "#{req_method} #{uri.path || '/'} UHTTP/1.0\n"
-		packet = client.request(text)
+		
+		req = UHTTPRequest.new
+		req.req_method = req_method
+		req.path = uri.path
+
+		packet = client.send_text(req.to_s)
 		UHTTPResponse.parse(packet.text)
 	end
 
@@ -98,7 +102,7 @@ class UHTTPServer
 
 			if response.nil?
 				begin
-					request = UHTTPRequest.new(packet.text)
+					request = UHTTPRequest.from_packet packet
 				rescue => e
 					puts "400 BAD REQUEST: #{e}"
 					response = respond(400, 'Bad Request')
@@ -132,12 +136,28 @@ class UHTTPRequest
 	attr_accessor :path
 	attr_accessor :protocol
 
-	def initialize(text)
+	def initialize
+		self.req_method = 'GET'
+		self.protocol = 'UHTTP/1.0'
+		self.path ='/'
+	end
+
+	def self.from_packet(p)
+		text = p
+		text = p.text if text.is_a? UDPPacket
 		data = text.split(' ')
+
 		raise 'invalid request' if data.length != 3
-		self.req_method = data[0]
-		self.path = data[1]
-		self.protocol = data[2]
+		req = self.new
+		req.req_method = data[0]
+		req.path = data[1]
+		req.protocol = data[2]
+		return req
+	end
+
+	def to_s
+		self.path = '/' if path.nil? || path.empty?
+		"#{req_method} #{path} #{protocol}\n"
 	end
 end
 
