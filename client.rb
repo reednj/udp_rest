@@ -6,10 +6,11 @@ require './lib/udp_rest'
 
 class App
 	def main
-		path = ARGV.last || '/hello'
+		url = ARGV.last || '/hello'
+		url = "uhttp://" + url unless url.start_with? 'uhttp'
 
 		begin
-			r = UDPRestClient.get("uhttp://127.0.0.1:7890#{path}")
+			r = UDPRestClient.get(url)
 			print_response(r)
 		rescue => e
 			puts e
