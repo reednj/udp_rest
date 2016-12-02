@@ -29,4 +29,8 @@ UHTTPServer.new(:port => port) do |s|
 		req_count.to_s
 	end
 
+	s.get '/too_long' do
+		'a' * 600
+	end
+
 end

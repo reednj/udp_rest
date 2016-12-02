@@ -198,6 +198,7 @@ class UDPServer
 	end
 
 	def send(text, host, port)
+		raise "message too long (max is #{@max_packet_size}b, was #{text.bytesize})" if text.bytesize > @max_packet_size
 		self.socket.send(text, 0, host, port)
 	end
 
