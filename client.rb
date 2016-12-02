@@ -7,8 +7,13 @@ require './lib/udp_rest'
 class App
 	def main
 		path = ARGV.last || '/hello'
-		r = UDPRestClient.get("uhttp://127.0.0.1:7890#{path}")
-		print_response(r)		
+
+		begin
+			r = UDPRestClient.get("uhttp://127.0.0.1:7890#{path}")
+			print_response(r)
+		rescue => e
+			puts e
+		end
 	end
 
 	def print_response(r)

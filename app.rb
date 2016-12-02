@@ -22,6 +22,10 @@ class App
 				Time.now.to_i
 			end
 
+			s.get '/time/iso' do
+				Time.now.iso8601
+			end
+
 			s.get '/count' do
 				c += 1
 				c.to_s
