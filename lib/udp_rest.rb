@@ -108,6 +108,10 @@ class UHTTPServer
 			if response.nil?
 				begin
 					response = route_request(request)
+
+					if response.to_s.bytesize > udp_server.max_packet_size
+						raise "response too long (#{response.to_s.bytesize} bytes)"
+					end
 				rescue => e
 					puts "500 APPLICATION ERROR: #{e}"
 					response = respond(500, 'Application Error')
@@ -179,6 +183,10 @@ class UDPServer
 	def initialize
 		@max_packet_size = 512
 		self.socket = UDPSocket.new
+	end
+
+	def max_packet_size
+		@max_packet_size
 	end
 
 	def listen(port, options = {})
