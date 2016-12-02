@@ -4,6 +4,7 @@ require 'json'
 require 'time'
 require './lib/udp_rest'
 
+req_count = 0
 port = (ARGV.last || 7890).to_i
 puts "listening on 0.0.0.0:#{port}..."
 
