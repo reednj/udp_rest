@@ -4,7 +4,7 @@ require 'json'
 require 'time'
 require './lib/udp_rest'
 
-port = 7890
+port = ARGV.last.to_i || 7890
 puts "listening on 0.0.0.0:#{port}..."
 
 UHTTPServer.new(:port => port) do |s|
