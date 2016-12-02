@@ -17,5 +17,3 @@ class App
 		puts r.text
 	end
 end
-
-App.new.main
