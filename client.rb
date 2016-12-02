@@ -2,15 +2,29 @@
 
 require 'socket'
 require 'colorize'
+require 'trollop'
 require './lib/udp_rest'
 
 class App
 	def main
-		url = ARGV.last || '/hello'
-		url = "uhttp://" + url unless url.start_with? 'uhttp'
+		valid_methods = ['GET', 'PUT', 'POST', 'DELETE']
+		@opts = Trollop::options do
+			version "UDP RestClient (c) 2016 @reednj"
+			banner "Usage: udp-rest [options] <url>"
+			opt :method, "HTTP Method (GET, POST etc)", :type => :string, :default => 'GET'
+			opt :content, "Show the response content only (no headers)", :default => false
+		end
+
+		Trollop::educate if ARGV.empty?
+		url = ARGV.last
+		url = "uhttp://" + url unless url.start_with? 'uhttp://'
 
 		begin
-			r = UDPRestClient.get(url)
+			if !valid_methods.include? @opts[:method].upcase
+				raise "Invalid REST method '#{@opts[:method]}'"
+			end
+
+			r = UDPRestClient.uhttp(@opts[:method], url)
 			print_response(r)
 		rescue => e
 			puts e
@@ -18,8 +32,11 @@ class App
 	end
 
 	def print_response(r)
-		puts r.ok? ? r.status_line.green : r.status_line.red
-		puts ''
+		unless @opts[:content]
+			puts r.ok? ? r.status_line.green : r.status_line.red
+			puts ''
+		end
+
 		puts r.text
 	end
 end

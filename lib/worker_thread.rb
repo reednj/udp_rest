@@ -31,7 +31,7 @@ class WorkerThread
 				sleep options[:timeout].to_f
 				
 				if worker.status != false
-					$stderr.puts "#{Time.now}\tbackground_task thread timeout\n"
+					#$stderr.puts "#{Time.now}\tbackground_task thread timeout\n"
 					worker.kill
 				end
 			end
