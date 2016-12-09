@@ -5,7 +5,7 @@ require 'udp_rest/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "udp_rest"
-  spec.version       = UdpRest::VERSION
+  spec.version       = UDPRest::VERSION
   spec.authors       = ["Nathan Reed"]
   spec.email         = ["reednj@gmail.com"]
 
