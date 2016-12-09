@@ -12,7 +12,7 @@ class App
 			version "UDP RestClient (c) 2016 @reednj"
 			banner "Usage: udp-rest [options] <url>"
 			opt :method, "HTTP Method (GET, POST etc)", :type => :string, :default => 'GET'
-			opt :content, "Show the response content only (no headers)", :default => false
+			opt :headers, "Show the response headers", :default => false
 		end
 
 		Trollop::educate if ARGV.empty?
@@ -32,7 +32,7 @@ class App
 	end
 
 	def print_response(r)
-		unless @opts[:content]
+		if @opts[:headers]
 			puts r.ok? ? r.status_line.green : r.status_line.red
 			puts ''
 		end

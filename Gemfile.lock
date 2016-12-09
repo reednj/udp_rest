@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    udp_rest (0.1.0)
+    udp_rest (0.9.0)
       colorize
       trollop
 
