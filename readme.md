@@ -1,35 +1,41 @@
 # REST over UDP
 
- - Most REST requets are very small
- - it should be possible to implement a simple version of HTTP that can run over UDP in order to make REST requets
- - we have implemented that
-  - the max packet size is 512 bytes
- - This gem makes it easy to create servers and clients for udp-rest
- - it also contains a curl-like command line app
- - obviously this is not going to work from any browser, but it can be useful for simple command line apps.
+REST is a useful pattern for client-server interaction, but for simple scenarios setting up an entire HTTP stack is overkill. This gem provides a classes to allow for REST over UDP using a http-like protocol, as well as a curl like app for making requests from the command line.
+
+The request and response size is limited 512 bytes, this model is only appropriate for certain apis. 
 
 ## Try it out
 
-There is a udp rest server running on uhttp.reednj.com. You can make requests to it by installing the gem.
+There is a udp rest server running on uhttp.reednj.com, port 7890.
 
-		gem install udp_rest
-		udp-rest uhttp.reednj.com
+	gem install udp_rest
+	udp-rest uhttp.reednj.com:7890
 
-		<SCREEN SHOT OF CONSOLE>
+![terminal](docs/term.png)
 
-## Server
+Some other urls to try are:
 
-Use this gem to create sinatra style servers to respond to requests.
-
-		<CODE>
+ - uhttp.reednj.com:7890/time/iso
+ - uhttp.reednj.com:7890/time/unix
+ - uhttp.reednj.com:7890/count
 
 ## Client
 
-## Benchmarks
+Use the `UDPRest::Client` class to make requests programmatically
 
- - do some testing of the latency here, see if it really is faster. Pick a few different servers
+	UDPRest::Client.get('uhttp://uhttp.reednj.com:7890')
+	UDPRest::Client.post('uhttp://uhttp.reednj.com:7890')
 
-## Other Points
+## Server
 
- - encoding is always UTF-8
- - the max request and response size is 512 bytes
+Use the `UDPRest::Server` class to create simple sinatra-style servers
+
+	UDPRest::Server.new(:port => 7890) do |s|
+		s.get '/'
+			'hello, world!'
+		end
+
+		s.get '/time'
+			Time.now.to_s
+		end
+	end
