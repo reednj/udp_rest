@@ -8,7 +8,7 @@ req_count = 0
 port = (ARGV.last || 7890).to_i
 puts "listening on 0.0.0.0:#{port}..."
 
-UDPRest::UHTTPServer.new(:port => port) do |s|
+UDPRest::Server.new(:port => port) do |s|
 	s.get '/' do
 		"Hello, World!\nVisit http://github.com/reednj/udp_rest for more info"
 	end

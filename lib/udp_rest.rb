@@ -5,7 +5,7 @@ require "udp_rest/version"
 require 'worker_thread'
 
 module UDPRest
-class UHTTPServer
+class Server
 	def initialize(options = {})
 		@udp = UDPServer.new
 		@routes = {}
@@ -88,7 +88,7 @@ class UHTTPServer
 	end
 end
 
-class UDPRestClient
+class Client
 	attr_accessor :host
 	attr_accessor :port
 	attr_accessor :socket
