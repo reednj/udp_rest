@@ -3,7 +3,7 @@
 require 'socket'
 require 'colorize'
 require 'trollop'
-require './lib/udp_rest'
+require 'udp_rest'
 
 class App
 	def main
@@ -24,7 +24,7 @@ class App
 				raise "Invalid REST method '#{@opts[:method]}'"
 			end
 
-			r = UDPRestClient.uhttp(@opts[:method], url)
+			r = UDPRest::Client.uhttp(@opts[:method], url)
 			print_response(r)
 		rescue => e
 			puts e
