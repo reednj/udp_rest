@@ -3,7 +3,7 @@
 require 'socket'
 require 'colorize'
 require 'trollop'
-require './lib/udp_rest'
+require 'udp_rest'
 
 class App
 	def main
