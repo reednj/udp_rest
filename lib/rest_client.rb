@@ -24,7 +24,7 @@ class App
 				raise "Invalid REST method '#{@opts[:method]}'"
 			end
 
-			r = UDPRestClient.uhttp(@opts[:method], url)
+			r = UDPRest::UDPRestClient.uhttp(@opts[:method], url)
 			print_response(r)
 		rescue => e
 			puts e

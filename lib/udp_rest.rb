@@ -27,7 +27,7 @@ class UDPRest::UDPRestClient
 		thread = WorkerThread.new.start :timeout => self.timeout do
 			self.socket.send(text, 0, self.host, self.port)
 			response_data = self.socket.recvfrom(@max_packet_size)
-			UDPPacket.new(response_data)
+			UDPRest::UDPPacket.new(response_data)
 		end
 
 		thread.join
@@ -38,14 +38,14 @@ class UDPRest::UDPRestClient
 
 	def self.uhttp(req_method, url)
 		uri = URI(url)
-		client = UDPRestClient.new(uri.host, uri.port || 80)
+		client = self.new(uri.host, uri.port || 80)
 		
-		req = UHTTPRequest.new
+		req = UDPRest::UHTTPRequest.new
 		req.req_method = req_method
 		req.path = uri.path
 
 		packet = client.send_text(req.to_s)
-		UHTTPResponse.parse(packet.text)
+		UDPRest::UHTTPResponse.parse(packet.text)
 	end
 
 	def self.get(url)
