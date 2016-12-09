@@ -5,56 +5,7 @@ require "udp_rest/version"
 require 'worker_thread'
 
 module UDPRest
- 
-end
-
-class UDPRest::UDPRestClient
-	attr_accessor :host
-	attr_accessor :port
-	attr_accessor :socket
-	attr_accessor :timeout
-
-	def initialize(host, port)
-		@max_packet_size = 512
-
-		self.host = host
-		self.port = port
-		self.socket = UDPSocket.new
-		self.timeout = 5.0
-	end
-
-	def send_text(text)
-		thread = WorkerThread.new.start :timeout => self.timeout do
-			self.socket.send(text, 0, self.host, self.port)
-			response_data = self.socket.recvfrom(@max_packet_size)
-			UDPRest::UDPPacket.new(response_data)
-		end
-
-		thread.join
-		packet = thread.value
-		raise "Request Timeout (#{host}:#{port})" if packet.nil?
-		return packet
-	end
-
-	def self.uhttp(req_method, url)
-		uri = URI(url)
-		client = self.new(uri.host, uri.port || 80)
-		
-		req = UDPRest::UHTTPRequest.new
-		req.req_method = req_method
-		req.path = uri.path
-
-		packet = client.send_text(req.to_s)
-		UDPRest::UHTTPResponse.parse(packet.text)
-	end
-
-	def self.get(url)
-		self.uhttp('GET', url)
-	end
-	
-end
-
-class UDPRest::UHTTPServer
+class UHTTPServer
 	def initialize(options = {})
 		@udp = UDPServer.new
 		@routes = {}
@@ -135,6 +86,52 @@ class UDPRest::UHTTPServer
 	def respond(code, text)
 		UHTTPResponse.new(code, :text => text)
 	end
+end
+
+class UDPRestClient
+	attr_accessor :host
+	attr_accessor :port
+	attr_accessor :socket
+	attr_accessor :timeout
+
+	def initialize(host, port)
+		@max_packet_size = 512
+
+		self.host = host
+		self.port = port
+		self.socket = UDPSocket.new
+		self.timeout = 5.0
+	end
+
+	def send_text(text)
+		thread = WorkerThread.new.start :timeout => self.timeout do
+			self.socket.send(text, 0, self.host, self.port)
+			response_data = self.socket.recvfrom(@max_packet_size)
+			UDPPacket.new(response_data)
+		end
+
+		thread.join
+		packet = thread.value
+		raise "Request Timeout (#{host}:#{port})" if packet.nil?
+		return packet
+	end
+
+	def self.uhttp(req_method, url)
+		uri = URI(url)
+		client = self.new(uri.host, uri.port || 80)
+		
+		req = UHTTPRequest.new
+		req.req_method = req_method
+		req.path = uri.path
+
+		packet = client.send_text(req.to_s)
+		UHTTPResponse.parse(packet.text)
+	end
+
+	def self.get(url)
+		self.uhttp('GET', url)
+	end
+	
 end
 
 class UDPRest::UHTTPRequest
@@ -268,3 +265,4 @@ class UDPRest::UDPPacket
 	end
 end
 
+end

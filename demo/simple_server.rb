@@ -2,13 +2,13 @@
 
 require 'json'
 require 'time'
-require './lib/udp_rest'
+require 'udp_rest'
 
 req_count = 0
 port = (ARGV.last || 7890).to_i
 puts "listening on 0.0.0.0:#{port}..."
 
-UHTTPServer.new(:port => port) do |s|
+UDPRest::UHTTPServer.new(:port => port) do |s|
 	s.get '/' do
 		"Hello, World!\nVisit http://github.com/reednj/udp_rest for more info"
 	end
