@@ -2,7 +2,7 @@
 
 REST is a useful pattern for client-server interaction, but for simple scenarios setting up an entire HTTP stack is overkill. This gem provides a classes to allow for REST over UDP using a http-like protocol, as well as a curl like app for making requests from the command line.
 
-The request and response size is limited 512 bytes, this model is only appropriate for certain apis. 
+The request and response size is limited 512 bytes, so this model is only appropriate for certain apis. 
 
 ## Try it out
 
