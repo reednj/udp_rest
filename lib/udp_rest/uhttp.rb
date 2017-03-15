@@ -48,11 +48,11 @@ module UDPRest
 
         def params
             return {} if query.nil? || query.strip == ''
-            
+
             if @params.nil?
+                @params = {}
                 p = CGI.parse(self.query)
-                p.each {|k,v| p[k] = v.first }
-                @params = p
+                p.each {|k,v| @params[k] = v.first }
             end
 
             @params
