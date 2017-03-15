@@ -1,4 +1,5 @@
 require 'uri'
+require 'cgi'
 require 'socket'
 
 module UDPRest
@@ -43,6 +44,18 @@ module UDPRest
             else
                 path + '?' + query
             end
+        end
+
+        def params
+            return {} if query.nil? || query.strip == ''
+            
+            if @params.nil?
+                p = CGI.parse(self.query)
+                p.each {|k,v| p[k] = v.first }
+                @params = p
+            end
+
+            @params
         end
     end
 
