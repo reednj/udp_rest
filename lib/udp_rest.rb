@@ -125,6 +125,7 @@ module UDPRest
 			req = UHTTPRequest.new
 			req.req_method = req_method
 			req.path = uri.path
+			req.query = uri.query
 
 			packet = client.send_text(req.to_s)
 			UHTTPResponse.parse(packet.text)

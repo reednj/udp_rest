@@ -6,6 +6,7 @@ module UDPRest
     class UDPRest::UHTTPRequest
         attr_accessor :req_method
         attr_accessor :path
+        attr_accessor :query
         attr_accessor :protocol
 
         def initialize
@@ -22,14 +23,26 @@ module UDPRest
             raise 'invalid request' if data.length != 3
             req = self.new
             req.req_method = data[0]
-            req.path = data[1]
             req.protocol = data[2]
+            
+            path_data = data[1].split('?')
+            req.path = path_data[0]
+            req.query = path_data[1] || '' if path_data.length > 1
+
             return req
         end
 
         def to_s
             self.path = '/' if path.nil? || path.empty?
-            "#{req_method} #{path} #{protocol}\n"
+            "#{req_method} #{path_and_query} #{protocol}\n"
+        end
+
+        def path_and_query
+            if query.nil? || query.strip == ''
+                path
+            else
+                path + '?' + query
+            end
         end
     end
 
