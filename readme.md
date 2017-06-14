@@ -2,7 +2,7 @@
 
 REST is a useful pattern for client-server interaction, but for simple scenarios setting up an entire HTTP stack is overkill. This gem provides a classes to allow for REST over UDP using a http-like protocol, as well as a curl like app for making requests from the command line.
 
-The request and response size is limited 512 bytes, so this model is only appropriate for certain apis. 
+The request and response size is limited 512 bytes, so this model is only appropriate for certain uses. Obviously it isn't very good for returning large amounts of data, but rather for sending commands to an endpoint, or logging small amounts of data with a high frequency.
 
 ## Try it out
 
@@ -43,3 +43,7 @@ Use the `UDPRest::Server` class to create simple sinatra-style servers
 			params['data'].to_s
 		end
 	end
+
+## Performance
+
+The performance difference can be quite signficant when making requests with poor latency - for example a request from Australia to the US takes about 900ms with http, and 300 - 400ms with udp_rest.
