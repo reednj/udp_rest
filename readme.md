@@ -31,11 +31,15 @@ Use the `UDPRest::Client` class to make requests programmatically
 Use the `UDPRest::Server` class to create simple sinatra-style servers
 
 	UDPRest::Server.new(:port => 7890) do |s|
-		s.get '/'
+		s.get '/' do
 			'hello, world!'
 		end
 
-		s.get '/time'
+		s.get '/time' do
 			Time.now.to_s
+		end
+
+		s.get '/echo' do |request|
+			params['data'].to_s
 		end
 	end
