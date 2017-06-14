@@ -38,4 +38,8 @@ UDPRest::Server.new(:port => port) do |s|
 		'a' * 600
 	end
 
+	s.get '/echo' do |request|
+		(request.params['data'] || 'hello').to_s
+	end
+
 end
